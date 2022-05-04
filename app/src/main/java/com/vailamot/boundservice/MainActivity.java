@@ -16,22 +16,19 @@ import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
     private RelativeLayout layout;
-    private TextView tvTime;
+    private TextView tvTime, tvTotal;
     private ImageView imageView;
 
     private MyService mMyService;
     private boolean isServiceConnection;
 
-
-    private ServiceConnection mServiceConnection = new ServiceConnection() {
+    private final ServiceConnection mServiceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
             MyService.MyBinder myBinder = (MyService.MyBinder) iBinder;
             mMyService = myBinder.getMyService();
             isServiceConnection = true;
-            hienThi();
-
-
+            display();
         }
 
         @Override
@@ -48,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
 
         layout = findViewById(R.id.layout_bound);
         tvTime = findViewById(R.id.tv_time);
+        tvTotal = findViewById(R.id.tv_total);
         imageView = findViewById(R.id.img_play_or_pause);
 
 
@@ -55,10 +53,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void startService(View view) {
         Intent intent = new Intent(this, MyService.class);
-
         bindService(intent, mServiceConnection, Context.BIND_AUTO_CREATE);
-
-
     }
 
     public void stopService(View view) {
@@ -66,7 +61,6 @@ public class MainActivity extends AppCompatActivity {
             unbindService(mServiceConnection);
             isServiceConnection = false;
             layout.setVisibility(View.GONE);
-
         }
     }
 
@@ -78,22 +72,22 @@ public class MainActivity extends AppCompatActivity {
             mMyService.resumeMusic();
             imageView.setImageResource(R.drawable.ic_baseline_pause_24);
         }
-
     }
 
-
-    public void hienThi() {
+    public void display() {
         layout.setVisibility(View.VISIBLE);
+        int b = mMyService.getMax();
+        tvTotal.setText("/   " + (b/60) + ":" + (b%60));
         if(isServiceConnection) {
-            new CountDownTimer(mMyService.getMax(), 5) {
+            new CountDownTimer(b*1000, 1) {
                 @Override
                 public void onTick(long l) {
-                    tvTime.setText((mMyService.getTime()) / 60000 + ":" + (mMyService.getTime()) / 1000);
+                    int a = mMyService.getTime();
+                    tvTime.setText((a/60) + ":" + (a%60));
                 }
 
                 @Override
                 public void onFinish() {
-                    tvTime.setText(mMyService.getMax() + "");
                 }
             }.start();
         }

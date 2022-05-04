@@ -12,7 +12,8 @@
         android:layout_height="64dp"
         android:background="#DA7676"
         app:layout_constraintTop_toTopOf="parent"
-        android:visibility="gone">
+        android:visibility="gone"
+        >
         <TextView
             android:id="@+id/tv_title"
             android:layout_width="wrap_content"
@@ -29,6 +30,16 @@
             android:text="1234"
             android:layout_margin="10dp"
             android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:textColor="@color/white"
+            android:textSize="16sp"/>
+        <TextView
+            android:id="@+id/tv_total"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="1234"
+            android:layout_margin="10dp"
+            android:layout_toRightOf="@id/tv_time"
             android:layout_centerVertical="true"
             android:textColor="@color/white"
             android:textSize="16sp"/>

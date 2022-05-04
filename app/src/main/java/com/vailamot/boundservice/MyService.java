@@ -10,7 +10,7 @@ public class MyService extends Service {
     private MediaPlayer mediaPlayer;
     private boolean isPlaying;
 
-    private MyBinder myBinder = new MyBinder();
+    private final MyBinder myBinder = new MyBinder();
 
     public class MyBinder extends Binder{
         MyService getMyService(){
@@ -19,8 +19,6 @@ public class MyService extends Service {
     }
     public MyService() {
     }
-
-
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -36,7 +34,6 @@ public class MyService extends Service {
             mediaPlayer = null;
         }
     }
-
 
     // Phát nhạc
     private void startMusic() {
@@ -65,16 +62,14 @@ public class MyService extends Service {
 
     public int getTime(){
         if(mediaPlayer!=null){
-            int a = mediaPlayer.getCurrentPosition();
-            return a;
+            return mediaPlayer.getCurrentPosition()/1000;
         }
         return 0;
 
     }
     public int getMax(){
         if(mediaPlayer!=null) {
-            int b = mediaPlayer.getDuration();
-            return b;
+            return mediaPlayer.getDuration()/1000;
         }
         return 0;
     }

@@ -9,12 +9,13 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.IBinder;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements IUpdateUiFromService{
     private RelativeLayout layout;
     private TextView tvTime, tvTotal;
     private ImageView imageView;
@@ -27,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
         public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
             MyService.MyBinder myBinder = (MyService.MyBinder) iBinder;
             mMyService = myBinder.getMyService();
+            mMyService.setIUpdateUiFromService(MainActivity.this);
             isServiceConnection = true;
             display();
         }
@@ -76,20 +78,13 @@ public class MainActivity extends AppCompatActivity {
 
     public void display() {
         layout.setVisibility(View.VISIBLE);
-        int b = mMyService.getMax();
-        tvTotal.setText("/   " + (b/60) + ":" + (b%60));
-        if(isServiceConnection) {
-            new CountDownTimer(b*1000, 1) {
-                @Override
-                public void onTick(long l) {
-                    int a = mMyService.getTime();
-                    tvTime.setText((a/60) + ":" + (a%60));
-                }
+        int maxDur = mMyService.getMax();
+        tvTotal.setText("/   " + (maxDur/60) + ":" + (maxDur%60));
+    }
 
-                @Override
-                public void onFinish() {
-                }
-            }.start();
-        }
+    @Override
+    public void updateCurrentTimeSong(long time) {
+        Log.d("DoanhTq", "updateCurrentTimeSong: time " + time);
+        tvTime.setText((time/60) + ":" + (time%60));
     }
 }
